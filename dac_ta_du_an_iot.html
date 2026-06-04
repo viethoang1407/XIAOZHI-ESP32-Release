@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặc Tả Dự Án IoT - Trợ Lý Ảo AI ESP32-S3</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Mermaid.js for Diagrams -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            theme: 'dark',
+            startOnLoad: true,
+            flowchart: { useMaxWidth: true, htmlLabels: true }
+        });
+    </script>
+    <style>
+        :root {
+            --bg-primary: #080b11;
+            --bg-secondary: #0f131a;
+            --bg-card: rgba(20, 26, 38, 0.6);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --primary: #00f0ff;
+            --primary-glow: rgba(0, 240, 255, 0.15);
+            --secondary: #9d4ede;
+            --accent-green: #39ff14;
+            --accent-yellow: #ffd54f;
+            --accent-red: #ff5252;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --text-light: #ffffff;
+            --font-header: 'Plus Jakarta Sans', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'Fira Code', monospace;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.5);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.7);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            padding: 0;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 5% 5%, rgba(0, 240, 255, 0.04) 0%, transparent 40%),
+                              radial-gradient(circle at 95% 95%, rgba(157, 78, 221, 0.04) 0%, transparent 40%);
+        }
+
+        /* Layout */
+        .wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background-color: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            padding: 30px 20px;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-brand i {
+            color: var(--primary);
+            font-size: 1.5rem;
+            text-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .sidebar-brand span {
+            font-family: var(--font-header);
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #ffffff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-menu li a:hover {
+            color: var(--text-light);
+            background-color: rgba(255, 255, 255, 0.03);
+            transform: translateX(4px);
+        }
+
+        .sidebar-menu li.active a {
+            color: #000;
+            background: linear-gradient(135deg, var(--primary), #00d2ff);
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 240, 255, 0.2);
+        }
+
+        /* Main Content Container */
+        .content-area {
+            margin-left: 280px;
+            flex: 1;
+            padding: 40px 50px 80px;
+            max-width: 1200px;
+        }
+
+        /* Premium Header Section */
+        header {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(0, 240, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        header h1 {
+            font-family: var(--font-header);
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #ffffff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header h2 {
+            font-family: var(--font-header);
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 20px;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .meta-item i {
+            font-size: 1.2rem;
+            color: var(--primary);
+            background: rgba(0, 240, 255, 0.08);
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(0, 240, 255, 0.15);
+        }
+
+        .meta-item div .label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-item div .value {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        /* Sections and Headings */
+        section {
+            margin-bottom: 60px;
+            scroll-margin-top: 40px;
+        }
+
+        .section-title {
+            font-family: var(--font-header);
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: var(--text-light);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        .section-title i {
+            color: var(--primary);
+            text-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        h3 {
+            font-family: var(--font-header);
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-top: 30px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        p {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            text-align: justify;
+        }
+
+        strong {
+            color: var(--text-light);
+        }
+
+        /* Custom Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card:hover {
+            border-color: rgba(0, 240, 255, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 240, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        /* Tables styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0 30px;
+            font-size: 0.9rem;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        th {
+            background-color: rgba(255, 255, 255, 0.03);
+            color: var(--text-light);
+            font-family: var(--font-header);
+            font-weight: 600;
+            text-align: left;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-muted);
+            background-color: rgba(20, 26, 38, 0.2);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: rgba(255, 255, 255, 0.015);
+            color: var(--text-light);
+        }
+
+        /* Badges & Alerts */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-cyan { background: rgba(0, 240, 255, 0.1); color: var(--primary); border: 1px solid rgba(0, 240, 255, 0.2); }
+        .badge-purple { background: rgba(157, 78, 221, 0.1); color: #d8b4fe; border: 1px solid rgba(157, 78, 221, 0.2); }
+        .badge-green { background: rgba(57, 255, 20, 0.1); color: var(--accent-green); border: 1px solid rgba(57, 255, 20, 0.2); }
+        .badge-yellow { background: rgba(255, 213, 79, 0.1); color: var(--accent-yellow); border: 1px solid rgba(255, 213, 79, 0.2); }
+        
+        .alert {
+            background: rgba(255, 82, 82, 0.08);
+            border: 1px solid rgba(255, 82, 82, 0.2);
+            border-left: 5px solid var(--accent-red);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 25px 0;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .alert i {
+            color: var(--accent-red);
+            font-size: 1.3rem;
+            margin-top: 2px;
+        }
+
+        .alert-content p {
+            margin: 0;
+            color: #ffcccc;
+            font-size: 0.9rem;
+        }
+
+        .alert-content strong {
+            color: #ffffff;
+        }
+
+        /* Lists */
+        ul {
+            list-style: none;
+            padding-left: 5px;
+            margin-bottom: 25px;
+        }
+
+        ul li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 10px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        ul li::before {
+            content: "\f105";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+        }
+
+        /* Diagrams wrapper */
+        .diagram-container {
+            background-color: #0d1117;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 25px 0 35px;
+            display: flex;
+            justify-content: center;
+            box-shadow: var(--shadow-sm);
+            overflow-x: auto;
+        }
+
+        /* Code snippets */
+        pre {
+            background-color: #0b0f19 !important;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 18px;
+            overflow-x: auto;
+            margin: 20px 0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        code {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: #d1d5db;
+        }
+
+        .inline-code {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: #ec4899;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 70px;
+                padding: 20px 10px;
+            }
+            .sidebar-brand span, .sidebar-menu li a span {
+                display: none;
+            }
+            .sidebar-menu li a {
+                justify-content: center;
+                padding: 12px;
+            }
+            .content-area {
+                margin-left: 70px;
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .content-area {
+                margin-left: 0;
+                padding: 20px;
+            }
+            header {
+                padding: 25px;
+            }
+            header h1 {
+                font-size: 1.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-brand">
+                <i class="fa-solid fa-microchip"></i>
+                <span>Bao Bao IoT Spec</span>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="active"><a href="#tong-quan"><i class="fa-solid fa-circle-info"></i> <span>1. Tổng quan</span></a></li>
+                <li><a href="#kien-truc"><i class="fa-solid fa-network-wired"></i> <span>2. Kiến trúc hệ thống</span></a></li>
+                <li><a href="#phan-cung"><i class="fa-solid fa-server"></i> <span>3. Đặc tả phần cứng</span></a></li>
+                <li><a href="#phan-mem"><i class="fa-solid fa-code"></i> <span>4. Đặc tả phần mềm</span></a></li>
+                <li><a href="#chuc-nang"><i class="fa-solid fa-list-check"></i> <span>5. Đặc tả chức năng</span></a></li>
+                <li><a href="#rest-api"><i class="fa-solid fa-cloud-arrow-down"></i> <span>6. Đặc tả REST API</span></a></li>
+                <li><a href="#giao-thuc"><i class="fa-solid fa-comments"></i> <span>7. Giao thức truyền thông</span></a></li>
+                <li><a href="#trang-thai"><i class="fa-solid fa-diagram-project"></i> <span>8. Quản lý trạng thái</span></a></li>
+                <li><a href="#bao-mat"><i class="fa-solid fa-shield-halved"></i> <span>9. Bảo mật hệ thống</span></a></li>
+                <li><a href="#hieu-nang"><i class="fa-solid fa-gauge-high"></i> <span>10. Hiệu năng & Ràng buộc</span></a></li>
+                <li><a href="#phu-luc"><i class="fa-solid fa-folder-open"></i> <span>Phụ lục & Tài liệu</span></a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="content-area">
+            <!-- Premium Header -->
+            <header>
+                <h1>ĐẶC TẢ DỰ ÁN BÀI TẬP LỚN MÔN IoT</h1>
+                <h2>TRỢ LÝ ẢO AI THÔNG MINH TRÊN NỀN TẢNG ESP32-S3</h2>
+                <p>Tài liệu đặc tả kỹ thuật chi tiết của thiết bị Bao Bao AI Assistant, bao gồm sơ đồ khối kiến trúc phần cứng, phần mềm, API REST nội bộ, giao thức truyền thông, biểu đồ trạng thái và danh mục hơn 68 chức năng IoT.</p>
+                
+                <div class="meta-grid">
+                    <div class="meta-item">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        <div>
+                            <div class="label">Môn học</div>
+                            <div class="value">Internet of Things (IoT)</div>
+                        </div>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fa-solid fa-microchip"></i>
+                        <div>
+                            <div class="label">Nền tảng</div>
+                            <div class="value">ESP32-S3 + Cloud AI</div>
+                        </div>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fa-solid fa-robot"></i>
+                        <div>
+                            <div class="label">Tên thiết bị</div>
+                            <div class="value">Bao Bao AI Assistant</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 1. TỔNG QUAN DỰ ÁN -->
+            <section id="tong-quan">
+                <h2 class="section-title"><i class="fa-solid fa-circle-info"></i> 1. TỔNG QUAN DỰ ÁN</h2>
+                
+                <div class="card">
+                    <h3>1.1. Mô tả dự án</h3>
+                    <p>Dự án xây dựng một <strong>trợ lý ảo AI thông minh</strong> chạy trên vi điều khiển ESP32-S3, tích hợp màn hình LCD cảm ứng 2.8 inch, microphone, loa, và kết nối WiFi. Thiết bị có khả năng:</p>
+                    <ul>
+                        <li>Nhận diện giọng nói offline (wake word) và trò chuyện với AI qua cloud</li>
+                        <li>Hiển thị giao diện đồng hồ, thông tin hệ thống trên LCD</li>
+                        <li>Cung cấp bảng điều khiển web (Web Dashboard) để giám sát và cấu hình từ xa</li>
+                        <li>Hỗ trợ giao thức MCP (Model Context Protocol) để mở rộng chức năng</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>1.2. Mục tiêu dự án</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">#</th>
+                                <th style="width: 200px;">Mục tiêu</th>
+                                <th>Mô tả chi tiết</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><strong>Ứng dụng IoT thực tế</strong></td>
+                                <td>Xây dựng thiết bị IoT hoàn chỉnh từ thiết kế phần cứng, tích hợp driver đến viết phần mềm ứng dụng.</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><strong>Xử lý âm thanh nhúng</strong></td>
+                                <td>Nhận diện giọng nói ngoại tuyến (Wake Word) ngay trên vi điều khiển bằng mô hình mạng Nơ-ron.</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td><strong>Kết nối Cloud AI</strong></td>
+                                <td>Truyền/nhận dữ liệu âm thanh giọng nói với server AI thời gian thực qua giao thức WebSocket mã hóa.</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td><strong>Web Dashboard</strong></td>
+                                <td>Phát triển trang dashboard web nội bộ (LAN) phục vụ giám sát và cấu hình thiết bị từ xa.</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td><strong>Giám sát hệ thống</strong></td>
+                                <td>Theo dõi realtime bộ nhớ RAM (SRAM, PSRAM), nhiệt độ CPU, tín hiệu WiFi RSSI và thời gian hoạt động.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <h3>1.3. Phạm vi dự án</h3>
+                    <ul>
+                        <li><strong>Trong phạm vi:</strong> Phát triển thiết bị IoT độc lập phần cứng, thiết lập Web Dashboard nội bộ trong mạng LAN, kết nối với hạ tầng Cloud AI có sẵn (Xiaozhi Server).</li>
+                        <li><strong>Ngoài phạm vi:</strong> Phát triển Mobile App chuyên dụng, triển khai hạ tầng Cloud riêng, sản xuất khuôn vỏ nhựa công nghiệp số lượng lớn.</li>
+                    </ul>
+                </div>
+
+                <div class="alert">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <div class="alert-content">
+                        <strong>📌 TỔNG HỢP TOÀN BỘ CHỨC NĂNG CỦA THIẾT BỊ:</strong>
+                        <p>Thiết bị Bao Bao AI Assistant tích hợp tổng cộng <strong>80 chức năng</strong> trải dài trên 8 nhóm chính, bao phủ đầy đủ các khía cạnh của một sản phẩm IoT hoàn chỉnh từ âm thanh, hiển thị đến mạng và AI mở rộng.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. KIẾN TRÚC HỆ THỐNG -->
+            <section id="kien-truc">
+                <h2 class="section-title"><i class="fa-solid fa-network-wired"></i> 2. KIẾN TRÚC HỆ THỐNG</h2>
+                
+                <div class="card">
+                    <h3>2.1. Sơ đồ khối phần cứng & Kết nối</h3>
+                    <p>Sơ đồ khối thể hiện sự liên kết giữa các mô-đun phần cứng của thiết bị ESP32-S3 với các thực thể bên ngoài (Trình duyệt web người dùng và Máy chủ Cloud AI) qua môi trường mạng không dây WiFi:</p>
+                    
+                    <div class="diagram-container">
+                        <pre class="mermaid">
+graph TB
+    subgraph "Thiết bị IoT (ESP32-S3 Box)"
+        MIC[🎤 Microphone I2S MEMS]
+        SPK[🔊 Loa I2S - 8Ω 1W]
+        LCD[📱 LCD 2.8 inch SPI ST7789]
+        MCU[🧠 ESP32-S3 Dual Core<br/>240MHz, 512KB SRAM<br/>8MB PSRAM, 16MB Flash]
+        WIFI[📡 Module WiFi 802.11 b/g/n]
+        WEB[🌐 HTTP Web Server Port 80]
+        WW[🗣️ Wake Word Engine<br/>MultiNet6 Offline]
+        AUDIO[🎵 Audio Codec I2S MAX98357A/ES8311]
+    end
+
+    subgraph "Cloud Services"
+        AI[☁️ AI Server<br/>Xiaozhi Cloud LLM]
+        WS[🔌 WebSocket Protocol Secure]
+    end
+
+    subgraph "Thiết bị người dùng"
+        PHONE[📱 Trình duyệt Web<br/>PC / Smartphone]
+    end
+
+    MIC --> AUDIO --> MCU
+    MCU --> AUDIO --> SPK
+    MCU --> LCD
+    MCU --> WIFI
+    WIFI --> WS --> AI
+    WIFI --> WEB --> PHONE
+    MCU --> WW
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>2.2. Sơ đồ kiến trúc phần mềm (Software Layers)</h3>
+                    <p>Phần mềm chạy trên thiết bị được chia thành 4 lớp rõ ràng để quản lý hiệu quả tài nguyên hệ thống và điều phối các tác vụ FreeRTOS song song:</p>
+                    
+                    <div class="diagram-container">
+                        <pre class="mermaid">
+graph LR
+    subgraph "Lớp Ứng dụng (Application)"
+        APP[Application Manager]
+        MCP[MCP Server JSON-RPC]
+        CHAT[Chat History Manager]
+    end
+
+    subgraph "Lớp Dịch vụ (Services)"
+        AS[Audio Service]
+        DS[Display Service LVGL]
+        WS_SVC[WebSocket Client]
+        HTTP[HTTP Web Server]
+    end
+
+    subgraph "Lớp Driver (Hardware Abstraction)"
+        I2S[I2S Driver]
+        SPI[SPI Driver]
+        WIFI_DRV[WiFi STA Driver]
+        TEMP[Internal Temp Sensor]
+    end
+
+    subgraph "Phần cứng (Hardware)"
+        HW_MIC[Microphone]
+        HW_SPK[Speaker]
+        HW_LCD[LCD Panel]
+        HW_ANT[WiFi Antenna]
+    end
+
+    APP --> AS --> I2S --> HW_MIC
+    APP --> AS --> I2S --> HW_SPK
+    APP --> DS --> SPI --> HW_LCD
+    APP --> WS_SVC --> WIFI_DRV --> HW_ANT
+    APP --> HTTP --> WIFI_DRV
+    APP --> MCP
+                        </pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. ĐẶC TẢ PHẦN CỨNG -->
+            <section id="phan-cung">
+                <h2 class="section-title"><i class="fa-solid fa-server"></i> 3. ĐẶC TẢ PHẦN CỨNG</h2>
+                
+                <div class="card">
+                    <h3>3.1. Vi điều khiển chính (ESP32-S3)</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 250px;">Thông số kỹ thuật</th>
+                                <th>Giá trị chi tiết</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>MCU Core</strong></td>
+                                <td>Xtensa® 32-bit LX7 Dual-core, tích hợp tập lệnh xử lý AI (vector instructions)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tần số xung nhịp</strong></td>
+                                <td>Lên tới 240 MHz</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Bộ nhớ SRAM nội bộ</strong></td>
+                                <td>512 KB</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Bộ nhớ PSRAM ngoài</strong></td>
+                                <td>8 MB Octal SPI (phục vụ bộ đệm âm thanh và đồ họa hiển thị)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Bộ nhớ Flash ngoài</strong></td>
+                                <td>16 MB Quad SPI</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kết nối WiFi</strong></td>
+                                <td>2.4 GHz WiFi (802.11 b/g/n), băng thông lên tới 150 Mbps</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ngoại vi sử dụng</strong></td>
+                                <td>GPIO, SPI, I2C, I2S (cho Audio), ADC, PWM (cho độ sáng LCD)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <h3>3.2. Linh kiện phần cứng tích hợp</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 250px;">Mô-đun linh kiện</th>
+                                <th>Thông số chi tiết</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Màn hình hiển thị</strong></td>
+                                <td>2.8 inch IPS LCD, độ phân giải 240x320 pixel, Driver ST7789 kết nối SPI tốc độ cao</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Màn cảm ứng</strong></td>
+                                <td>Màn cảm ứng điện dung (Capacitive Touch) sử dụng Driver GT911 qua giao thức I2C</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Microphone thu âm</strong></td>
+                                <td>Digital MEMS Microphone, giao thức bus I2S, thu âm mono 16kHz, 16-bit</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Mạch đại âm thanh & Loa</strong></td>
+                                <td>Mạch giải mã & khuếch đại âm thanh I2S Class-D MAX98357A + Loa 8 Ohm công suất 1W</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Giao tiếp nạp/nguồn</strong></td>
+                                <td>Cổng USB Type-C cấp nguồn 5V và kết nối chip USB-to-UART nạp chương trình</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <h3>3.3. Sơ đồ kết nối chân GPIO (Hardware Mapping)</h3>
+                    <pre><code>ESP32-S3 GPIO Pins Allocation:
+├── LCD Display (SPI Interface)
+│   ├── MOSI  → GPIO 11 (Truyền dữ liệu)
+│   ├── SCLK  → GPIO 12 (Xung nhịp clock)
+│   ├── CS    → GPIO 10 (Chíp chọn CS)
+│   ├── DC    → GPIO 13 (Lựa chọn Data / Command)
+│   ├── RST   → GPIO 14 (Chân Reset LCD)
+│   └── BL    → GPIO 21 (Điều khiển độ sáng qua PWM)
+├── Audio Interface (I2S Bus)
+│   ├── BCLK  → GPIO 45 (Bit Clock)
+│   ├── WS    → GPIO 46 (L/R Clock / Word Select)
+│   ├── DOUT  → GPIO 42 (Dữ liệu ra loa - DAC Speaker)
+│   └── DIN   → GPIO 41 (Dữ liệu vào từ Mic - ADC Microphone)
+├── Touch Controller (I2C Bus)
+│   ├── SDA   → GPIO 8  (Data line)
+│   └── SCL   → GPIO 9  (Clock line)
+└── System Buttons
+    └── BOOT  → GPIO 0  (Nút nhấn đa năng / Reset Factory)</code></pre>
+                </div>
+            </section>
+
+            <!-- 4. ĐẶC TẢ PHẦN MỀM -->
+            <section id="phan-mem">
+                <h2 class="section-title"><i class="fa-solid fa-code"></i> 4. ĐẶC TẢ PHẦN MỀM</h2>
+                
+                <div class="card">
+                    <h3>4.1. Công nghệ cốt lõi và Thư viện</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 250px;">Công nghệ / Thư viện</th>
+                                <th>Vai trò trong dự án</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>ESP-IDF v5.5.4</strong></td>
+                                <td>Bộ phát triển phần mềm chính thức (SDK) của nhà sản xuất chip Espressif.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>FreeRTOS</strong></td>
+                                <td>Hệ điều hành thời gian thực để lập lịch, quản lý đa nhiệm và phân chia các task chạy song song trên 2 nhân của ESP32-S3.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>LVGL v9.x</strong></td>
+                                <td>Thư viện đồ họa mã nguồn mở để vẽ giao diện màn hình LCD chuyên nghiệp, mượt mà.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>esp-sr (MultiNet6)</strong></td>
+                                <td>Thư viện xử lý giọng nói của Espressif giúp nhận diện từ khóa đánh thức "Bao Bao" offline bằng mô hình AI mạng Nơ-ron trên chip.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Opus Codec</strong></td>
+                                <td>Thư viện mã hóa và giải mã âm thanh giọng nói chất lượng cao, giúp nén tối đa băng thông truyền qua internet.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>esp_http_client</strong></td>
+                                <td>Thư viện client HTTP để kết nối mạng, tải dữ liệu hoặc tải firmware cập nhật OTA.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <h3>4.2. Quản lý phân chia CPU Core (Dual-core Allocations)</h3>
+                    <ul>
+                        <li><strong>Core 0 (Protocol & System Tasks):</strong> Chịu trách nhiệm quản lý kết nối WiFi, chạy WebSocket client để giao tiếp AI, chạy Web Server phục vụ Dashboard, xử lý mã hóa/giải mã âm thanh Opus và chạy bộ lọc nhiễu tín hiệu microphone (AFE).</li>
+                        <li><strong>Core 1 (UI & Rendering Tasks):</strong> Chịu trách nhiệm hoàn toàn cho việc vẽ giao diện người dùng LCD thông qua thư viện đồ họa LVGL v9, cập nhật hoạt ảnh biểu cảm khuôn mặt Robot, hiển thị đồng hồ và kiểm tra phản hồi sự kiện cảm ứng màn hình GT911.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 5. ĐẶC TẢ CHỨC NĂNG -->
+            <section id="chuc-nang">
+                <h2 class="section-title"><i class="fa-solid fa-list-check"></i> 5. ĐẶC TẢ CHỨC NĂNG</h2>
+                
+                <div class="card">
+                    <h3>5.1. Sơ đồ Use Case</h3>
+                    <p>Sơ đồ Use Case mô tả tất cả các tương tác khả thi của người dùng với thiết bị IoT Bao Bao AI Assistant thông qua các kênh giao tiếp: giọng nói ngoại tuyến, cảm ứng màn hình, và thông qua trình duyệt Dashboard từ xa:</p>
+                    
+                    <div class="diagram-container">
+                        <pre class="mermaid">
+graph TB
+    USER((👤 Người dùng))
+
+    subgraph "Hệ thống Trợ lý AI IoT Bao Bao"
+        UC1[🗣️ Đánh thức bằng giọng nói 'Bao Bao']
+        UC2[💬 Trò chuyện trực tiếp với AI]
+        UC3[🔊 Điều chỉnh âm lượng loa]
+        UC4[🔆 Điều chỉnh độ sáng màn hình]
+        UC5[🎙️ Cài đặt độ nhạy mic]
+        UC6[🎙️ Test microphone VU Meter]
+        UC7[📊 Giám sát hệ thống realtime]
+        UC8[📋 Xem lịch sử chat hội thoại]
+        UC9[📲 Gửi thông báo đẩy lên LCD]
+        UC10[⏰ Xem đồng hồ kỹ thuật số]
+        UC11[🔄 Khởi động lại thiết bị từ xa]
+    end
+
+    USER --> UC1
+    USER --> UC2
+    USER --> UC3
+    USER --> UC4
+    USER --> UC5
+    USER --> UC6
+    USER --> UC7
+    USER --> UC8
+    USER --> UC9
+    USER --> UC10
+    USER --> UC11
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>5.2. Danh mục chi tiết các chức năng đã triển khai</h3>
+                    
+                    <h4>🗣️ Nhóm 1: Tương tác giọng nói & AI (10 chức năng)</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 80px;">Mã</th>
+                                <th style="width: 220px;">Tên chức năng</th>
+                                <th>Mô tả hoạt động chi tiết</th>
+                                <th style="width: 150px;">Phương thức</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>A-01</td>
+                                <td><strong>Đánh thức bằng giọng nói</strong></td>
+                                <td>Người dùng nói "Bao Bao" (hoặc "Jarvis") để gọi thiết bị. Đèn LED sáng xanh lá và phát tiếng kêu báo hiệu bắt đầu lắng nghe.</td>
+                                <td><span class="badge badge-cyan">Offline (MultiNet6)</span></td>
+                            </tr>
+                            <tr>
+                                <td>A-02</td>
+                                <td><strong>Trò chuyện tự do AI</strong></td>
+                                <td>Thu âm giọng nói người dùng gửi lên Cloud AI, nhận câu trả lời dạng văn bản và giọng nói để phát lại qua loa.</td>
+                                <td><span class="badge badge-purple">Cloud WebSocket</span></td>
+                            </tr>
+                            <tr>
+                                <td>A-03</td>
+                                <td><strong>Hỏi thời tiết địa phương</strong></td>
+                                <td>Hỏi AI về thông tin thời tiết. AI thực hiện gọi công cụ API weather để trả lời chi tiết và hiển thị lên màn hình.</td>
+                                <td><span class="badge badge-purple">Cloud + Tool API</span></td>
+                            </tr>
+                            <tr>
+                                <td>A-04</td>
+                                <td><strong>Kể chuyện / Đọc thơ</strong></td>
+                                <td>AI kể chuyện cổ tích, đọc thơ hoặc phát bài hát ru khi được yêu cầu để giải trí cho trẻ nhỏ hoặc người dùng.</td>
+                                <td><span class="badge badge-purple">Cloud AI</span></td>
+                            </tr>
+                            <tr>
+                                <td>A-05</td>
+                                <td><strong>Dịch ngôn ngữ thời gian thực</strong></td>
+                                <td>Yêu cầu dịch các câu văn nói từ tiếng Việt sang các thứ tiếng khác và ngược lại. AI phát âm chuẩn từ loa.</td>
+                                <td><span class="badge badge-purple">Cloud AI</span></td>
+                            </tr>
+                            <tr>
+                                <td>A-06</td>
+                                <td><strong>Tra cứu kiến thức bách khoa</strong></td>
+                                <td>Giải các bài toán, tra cứu thông tin địa lý, lịch sử, khoa học kỹ thuật, định nghĩa khái niệm...</td>
+                                <td><span class="badge badge-purple">Cloud AI</span></td>
+                            </tr>
+                            <tr>
+                                <td>A-07</td>
+                                <td><strong>Đặt nhắc nhở thông minh</strong></td>
+                                <td>Ra lệnh đặt giờ nhắc nhở (Ví dụ: "uống nước sau 1 tiếng"). AI sẽ đặt lịch hẹn và tự động phát cảnh báo khi hết giờ.</td>
+                                <td><span class="badge badge-purple">Cloud + MCP Tool</span></td>
+                            </tr>
+                            <tr>
+                                <td>A-08</td>
+                                <td><strong>Máy tính giọng nói</strong></td>
+                                <td>Thực hiện các phép tính cộng, trừ, nhân, chia, tính phần trăm trực tiếp qua câu hỏi giọng nói thông thường.</td>
+                                <td><span class="badge badge-purple">Cloud AI</span></td>
+                            </tr>
+                            <tr>
+                                <td>A-09</td>
+                                <td><strong>Hỗ trợ đa ngôn ngữ</strong></td>
+                                <td>Thiết bị nhận diện và giao tiếp tự nhiên bằng nhiều ngôn ngữ khác nhau: Tiếng Việt, Tiếng Anh, Tiếng Trung Quốc...</td>
+                                <td><span class="badge badge-purple">Cloud AI</span></td>
+                            </tr>
+                            <tr>
+                                <td>A-10</td>
+                                <td><strong>Phát âm thanh phản hồi</strong></td>
+                                <td>Phát ra các âm thanh hệ thống để phản hồi tức thì các hành động (nhận lệnh, có thông báo, lỗi mất mạng...).</td>
+                                <td><span class="badge badge-cyan">Nội bộ (Sound FX)</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>📱 Nhóm 2: Hiển thị giao diện LCD (12 chức năng)</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 80px;">Mã</th>
+                                <th style="width: 220px;">Tên chức năng</th>
+                                <th>Mô tả hoạt động chi tiết</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>B-01</td>
+                                <td><strong>Đồng hồ kỹ thuật số chờ</strong></td>
+                                <td>Hiển thị giờ:phút cỡ lớn cùng thông tin ngày, tháng, năm và thứ trong tuần khi thiết bị ở trạng thái chờ (Idle).</td>
+                            </tr>
+                            <tr>
+                                <td>B-02</td>
+                                <td><strong>Icon trạng thái WiFi</strong></td>
+                                <td>Hiển thị biểu tượng kết nối mạng WiFi thời gian thực, màu xanh khi kết nối tốt, màu đỏ khi mất mạng.</td>
+                            </tr>
+                            <tr>
+                                <td>B-03</td>
+                                <td><strong>Icon trạng thái pin</strong></td>
+                                <td>Biểu diễn phần trăm dung lượng pin hiện tại cùng biểu tượng sạc điện nếu đang cắm dây nguồn USB.</td>
+                            </tr>
+                            <tr>
+                                <td>B-04</td>
+                                <td><strong>Hiển thị nhãn thiết bị</strong></td>
+                                <td>Hiển thị tên thương hiệu "Bao Bao AI" được thiết kế tinh tế trên thanh trạng thái phía trên của LCD.</td>
+                            </tr>
+                            <tr>
+                                <td>B-05</td>
+                                <td><strong>Hội thoại WeChat Bubble</strong></td>
+                                <td>Khi người dùng trò chuyện với AI, màn hình tự động cuộn hiển thị nội dung hội thoại dưới dạng bong bóng chat trái/phải.</td>
+                            </tr>
+                            <tr>
+                                <td>B-06</td>
+                                <td><strong>Biểu cảm khuôn mặt Robot</strong></td>
+                                <td>Khuôn mặt robot hoạt họa hiển thị các trạng thái cảm xúc động: nhấp nháy mắt khi chờ, xoay tròn khi nghĩ, vui vẻ khi nói.</td>
+                            </tr>
+                            <tr>
+                                <td>B-07</td>
+                                <td><strong>Popup thông báo đè (Overlay)</strong></td>
+                                <td>Hiển thị một cửa sổ thông báo đè lên màn hình hiện tại khi nhận được thông báo đẩy từ bên ngoài qua API.</td>
+                            </tr>
+                            <tr>
+                                <td>B-08</td>
+                                <td><strong>Giao diện Light / Dark</strong></td>
+                                <td>Hỗ trợ thay đổi phong cách hiển thị giao diện sáng hoặc tối để tiết kiệm pin hoặc phù hợp với ánh sáng phòng.</td>
+                            </tr>
+                            <tr>
+                                <td>B-09</td>
+                                <td><strong>Độ sáng màn hình (Backlight)</strong></td>
+                                <td>Cho phép tăng giảm độ sáng đèn nền của LCD từ 0% đến 100% bằng tín hiệu băm xung PWM.</td>
+                            </tr>
+                            <tr>
+                                <td>B-10</td>
+                                <td><strong>Hiển thị ảnh GIF động</strong></td>
+                                <td>Hỗ trợ giải mã và hiển thị các hoạt ảnh GIF động mượt mà bằng thư viện giải mã GIF nhúng chuyên dụng.</td>
+                            </tr>
+                            <tr>
+                                <td>B-11</td>
+                                <td><strong>Hiển thị hình ảnh JPEG</strong></td>
+                                <td>Hỗ trợ hiển thị hình ảnh tĩnh dạng JPEG/JPG lên các khu vực hiển thị trên màn hình LCD.</td>
+                            </tr>
+                            <tr>
+                                <td>B-12</td>
+                                <td><strong>Tương tác cảm ứng GT911</strong></td>
+                                <td>Người dùng có thể chạm, vuốt để điều khiển các nút nhấn trên màn hình bằng tấm cảm ứng điện dung.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>🌐 Nhóm 3: Web Dashboard - Điều khiển từ xa (12 chức năng)</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 80px;">Mã</th>
+                                <th style="width: 220px;">Tên chức năng</th>
+                                <th>Mô tả hoạt động chi tiết</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>C-01</td>
+                                <td><strong>Web giao diện Responsive</strong></td>
+                                <td>Giao diện dashboard thiết kế dạng Glassmorphism, Dark mode tự động co giãn hiển thị đẹp mắt trên cả PC lẫn điện thoại.</td>
+                            </tr>
+                            <tr>
+                                <td>C-02</td>
+                                <td><strong>Giám sát trạng thái Online</strong></td>
+                                <td>Hiển thị trạng thái kết nối, tên mạng WiFi đang dùng và mức pin của thiết bị thời gian thực.</td>
+                            </tr>
+                            <tr>
+                                <td>C-03</td>
+                                <td><strong>Điều khiển âm lượng loa</strong></td>
+                                <td>Thanh kéo Slider trên giao diện web cho phép tăng giảm âm lượng loa của ESP32 từ 0-100% ngay lập tức.</td>
+                            </tr>
+                            <tr>
+                                <td>C-04</td>
+                                <td><strong>Điều khiển độ sáng màn hình</strong></td>
+                                <td>Thanh kéo Slider thay đổi độ sáng đèn nền màn hình LCD của thiết bị từ xa qua API.</td>
+                            </tr>
+                            <tr>
+                                <td>C-05</td>
+                                <td><strong>Cài đặt độ nhạy Microphone</strong></td>
+                                <td>Thay đổi độ khuếch đại tín hiệu đầu vào (gain) của microphone phần cứng thông qua giao diện web.</td>
+                            </tr>
+                            <tr>
+                                <td>C-06</td>
+                                <td><strong>Kiểm tra mic (VU Meter)</strong></td>
+                                <td>Bấm nút test mic để xem mức độ âm thanh môi trường xung quanh đo bằng đơn vị RMS và Peak cập nhật liên tục.</td>
+                            </tr>
+                            <tr>
+                                <td>C-07</td>
+                                <td><strong>Gửi thông báo đẩy từ xa</strong></td>
+                                <td>Form nhập tiêu đề + nội dung trên web giúp gửi thông báo đẩy đè lên màn hình LCD của ESP32 kèm âm thanh cảnh báo.</td>
+                            </tr>
+                            <tr>
+                                <td>C-08</td>
+                                <td><strong>Xem lịch sử chat đầy đủ</strong></td>
+                                <td>Hiển thị toàn bộ cuộc trò chuyện giọng nói giữa người dùng và trợ lý ảo dưới dạng dòng thời gian có kèm mốc giờ.</td>
+                            </tr>
+                            <tr>
+                                <td>C-09</td>
+                                <td><strong>Hộp thư thoại báo thành công</strong></td>
+                                <td>Hiệu ứng Toast Popup màu xanh lam hiện lên mượt mà ở góc màn hình mỗi khi thao tác điều khiển thành công.</td>
+                            </tr>
+                            <tr>
+                                <td>C-10</td>
+                                <td><strong>Tự động đồng bộ (Polling)</strong></td>
+                                <td>Trang web tự động lấy dữ liệu từ ESP32 định kỳ mỗi 3 giây thông qua các cuộc gọi API nền, không cần reload trang.</td>
+                            </tr>
+                            <tr>
+                                <td>C-11</td>
+                                <td><strong>Giao diện tiếng Việt 100%</strong></td>
+                                <td>Toàn bộ các nhãn điều khiển, mô tả và nút bấm trên giao diện web được tối ưu hiển thị hoàn toàn bằng tiếng Việt.</td>
+                            </tr>
+                            <tr>
+                                <td>C-12</td>
+                                <td><strong>Nút dừng nhạc khẩn cấp</strong></td>
+                                <td>Nút Stop màu đỏ cho phép dừng ngay lập tức luồng phát nhạc đang chạy trên thiết bị từ xa.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>📊 Nhóm 4: Giám sát hệ thống realtime (14 chức năng)</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 80px;">Mã</th>
+                                <th style="width: 220px;">Tên chức năng</th>
+                                <th>Mô tả hoạt động chi tiết</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>D-01</td>
+                                <td><strong>Giám sát RAM nội bộ (SRAM)</strong></td>
+                                <td>Hiển thị dung lượng SRAM trống, tổng dung lượng và phần trăm đang dùng bằng thanh Progress Bar đổi màu thông minh.</td>
+                            </tr>
+                            <tr>
+                                <td>D-02</td>
+                                <td><strong>Giám sát bộ nhớ PSRAM</strong></td>
+                                <td>Thống kê chi tiết tình trạng sử dụng bộ nhớ ngoài 8MB PSRAM (nơi lưu đệm nhạc và đồ họa LVGL).</td>
+                            </tr>
+                            <tr>
+                                <td>D-03</td>
+                                <td><strong>Giám sát cường độ mạng RSSI</strong></td>
+                                <td>Đo cường độ tín hiệu WiFi đang kết nối bằng chỉ số dBm và cột sóng 5 vạch kèm phân loại độ khỏe của mạng.</td>
+                            </tr>
+                            <tr>
+                                <td>D-04</td>
+                                <td><strong>Giám sát nhiệt độ CPU</strong></td>
+                                <td>Đọc giá trị từ cảm biến nhiệt độ tích hợp trong chip ESP32-S3 và hiển thị dạng đồng hồ tròn đổi màu.</td>
+                            </tr>
+                            <tr>
+                                <td>D-05</td>
+                                <td><strong>Theo dõi thời gian chạy Uptime</strong></td>
+                                <td>Đồng hồ đếm thời gian hệ thống hoạt động liên tục kể từ lần khởi động gần nhất (dạng Ngày, Giờ, Phút, Giây).</td>
+                            </tr>
+                            <tr>
+                                <td>D-06</td>
+                                <td><strong>Hiển thị phiên bản phần mềm</strong></td>
+                                <td>Hiển thị phiên bản firmware đang chạy được trích xuất từ dữ liệu Header của file binary đã biên dịch.</td>
+                            </tr>
+                            <tr>
+                                <td>D-07</td>
+                                <td><strong>Thông tin phần cứng chip</strong></td>
+                                <td>Hiển thị tên board mạch đang dùng và loại chip xử lý (Ví dụ: `freenove-esp32s3-display-2.8-lcd / esp32s3`).</td>
+                            </tr>
+                            <tr>
+                                <td>D-08</td>
+                                <td><strong>Địa chỉ IP cục bộ</strong></td>
+                                <td>Hiển thị địa chỉ IP được cấp phát cho ESP32 trong mạng LAN để người dùng dễ dàng truy cập dashboard.</td>
+                            </tr>
+                            <tr>
+                                <td>D-09</td>
+                                <td><strong>Địa chỉ vật lý MAC</strong></td>
+                                <td>Hiển thị địa chỉ MAC duy nhất của chip ESP32 phục vụ mục đích cấu hình gán IP tĩnh hoặc bảo mật bộ định tuyến.</td>
+                            </tr>
+                            <tr>
+                                <td>D-10</td>
+                                <td><strong>Tên mạng WiFi kết nối</strong></td>
+                                <td>Hiển thị chính xác tên điểm phát WiFi (SSID) mà mạch đang kết nối.</td>
+                            </tr>
+                            <tr>
+                                <td>D-11</td>
+                                <td><strong>Biểu đồ RAM động thời gian thực</strong></td>
+                                <td>Biểu đồ HTML5 Canvas tự vẽ đồ thị dạng đường biểu diễn mức độ sử dụng RAM (SRAM và PSRAM) qua 30 điểm đo gần nhất.</td>
+                            </tr>
+                            <tr>
+                                <td>D-12</td>
+                                <td><strong>Kiểm soát bộ nhớ tối thiểu</strong></td>
+                                <td>Theo dõi lượng RAM trống thấp nhất từng ghi nhận (Minimum Free Heap) để phát hiện và ngăn chặn lỗi tràn bộ nhớ (Memory Leak).</td>
+                            </tr>
+                            <tr>
+                                <td>D-13</td>
+                                <td><strong>Theo dõi dung lượng Flash</strong></td>
+                                <td>Hiển thị thông tin dung lượng chip nhớ Flash tích hợp trên board mạch (16MB).</td>
+                            </tr>
+                            <tr>
+                                <td>D-14</td>
+                                <td><strong>Số lượng Task FreeRTOS chạy</strong></td>
+                                <td>Theo dõi số lượng luồng công việc (Task) đang hoạt động đồng thời trên nhân hệ điều hành.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 6. ĐẶC TẢ REST API -->
+            <section id="rest-api">
+                <h2 class="section-title"><i class="fa-solid fa-cloud-arrow-down"></i> 6. ĐẶC TẢ REST API</h2>
+                
+                <div class="card">
+                    <p>Thiết bị ESP32-S3 khởi động một REST API Server trên cổng tiêu chuẩn 80, hỗ trợ các Endpoint chính sau để phục vụ giao tiếp giữa Web Dashboard cục bộ và thiết bị IoT:</p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 100px;">Phương thức</th>
+                                <th style="width: 250px;">Endpoint</th>
+                                <th>Mô tả chức năng</th>
+                                <th style="width: 280px;">Request Body (JSON)</th>
+                                <th style="width: 200px;">Response ví dụ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="badge badge-green">GET</span></td>
+                                <td><code>/</code></td>
+                                <td>Tải giao diện Web Dashboard chính</td>
+                                <td>—</td>
+                                <td>HTML, CSS, JS nội dung</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-green">GET</span></td>
+                                <td><code>/api/status</code></td>
+                                <td>Lấy toàn bộ trạng thái và thông số hệ thống</td>
+                                <td>—</td>
+                                <td>JSON trạng thái chi tiết</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-cyan">POST</span></td>
+                                <td><code>/api/volume</code></td>
+                                <td>Đặt mức âm lượng cho loa (0-100)</td>
+                                <td><code>{"volume": 75}</code></td>
+                                <td><code>{"status":"ok"}</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-cyan">POST</span></td>
+                                <td><code>/api/brightness</code></td>
+                                <td>Đặt độ sáng đèn nền LCD (0-100)</td>
+                                <td><code>{"brightness": 80}</code></td>
+                                <td><code>{"status":"ok"}</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-cyan">POST</span></td>
+                                <td><code>/api/mic_gain</code></td>
+                                <td>Đặt độ nhạy microphone phần cứng</td>
+                                <td><code>{"gain": 50.0}</code></td>
+                                <td><code>{"status":"ok"}</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-green">GET</span></td>
+                                <td><code>/api/mic_level</code></td>
+                                <td>Lấy mức âm lượng mic thời gian thực</td>
+                                <td>—</td>
+                                <td><code>{"rms": 12.5, "peak": 30.2}</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-green">GET</span></td>
+                                <td><code>/api/chat_history</code></td>
+                                <td>Lấy danh sách lịch sử hội thoại</td>
+                                <td>—</td>
+                                <td>Mảng JSON các tin nhắn</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-cyan">POST</span></td>
+                                <td><code>/api/notification</code></td>
+                                <td>Đẩy thông báo lên màn hình LCD</td>
+                                <td><code>{"title":"Zalo","body":"Chào bạn"}</code></td>
+                                <td><code>{"status":"ok"}</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-cyan">POST</span></td>
+                                <td><code>/api/play_music</code></td>
+                                <td>Yêu cầu phát nhạc từ URL trực tuyến</td>
+                                <td><code>{"url":"http://.../nhac.mp3"}</code></td>
+                                <td><code>{"status":"ok"}</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-cyan">POST</span></td>
+                                <td><code>/api/stop_music</code></td>
+                                <td>Dừng phát nhạc trên thiết bị lập tức</td>
+                                <td>—</td>
+                                <td><code>{"status":"ok"}</code></td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-green">GET</span></td>
+                                <td><code>/api/music_status</code></td>
+                                <td>Lấy trạng thái phát nhạc hiện tại</td>
+                                <td>—</td>
+                                <td><code>{"playing": true}</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <h3>Chi tiết cấu trúc JSON trả về của Endpoint <code>/api/status</code></h3>
+                    <pre><code>{
+    "volume": 77,
+    "brightness": 100,
+    "battery_level": 96,
+    "wifi_ssid": "WiFi Connected",
+    "input_gain": 30.0,
+    "free_heap": 4051232,
+    "min_free_heap": 3813172,
+    "total_internal": 399435,
+    "free_internal": 81447,
+    "total_psram": 8388608,
+    "free_psram": 4046352,
+    "uptime_s": 120,
+    "firmware_version": "2.2.6",
+    "board_name": "freenove-esp32s3-display-2.8-lcd",
+    "chip_model": "esp32s3",
+    "mac_address": "3c:0f:02:de:c2:c0",
+    "ip_address": "192.168.1.48",
+    "rssi": -51,
+    "wifi_ssid_actual": "VIET HOANG",
+    "chip_temp": 44.3
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- 7. GIAO THỨC TRUYỀN THÔNG -->
+            <section id="giao-thuc">
+                <h2 class="section-title"><i class="fa-solid fa-comments"></i> 7. GIAO THỨC TRUYỀN THÔNG</h2>
+                
+                <div class="card">
+                    <h3>7.1. Sơ đồ tuần tự giao tiếp hệ thống (Sequence Diagram)</h3>
+                    <p>Sơ đồ dưới đây thể hiện 2 kịch bản hoạt động chính của hệ thống: Tương tác giọng nói thời gian thực với Cloud AI và Quản lý điều khiển cấu hình thông qua Web Dashboard cục bộ:</p>
+                    
+                    <div class="diagram-container">
+                        <pre class="mermaid">
+sequenceDiagram
+    participant User as 👤 Người dùng
+    participant ESP as 🔌 Thiết bị ESP32-S3
+    participant Cloud as ☁️ AI Cloud Server
+    participant Browser as 🌐 Web Dashboard
+
+    Note over User, ESP: KỊCH BẢN 1: TƯƠNG TÁC GIỌNG NÓI AI
+    User->>ESP: Nói "Bao Bao" (Wake Word)
+    ESP->>ESP: Chạy MultiNet6 Offline nhận diện
+    ESP->>ESP: Kích hoạt LED sáng & Ding Sound FX
+    ESP->>Cloud: Kết nối WebSocket (wss://) & Mở kênh audio
+    User->>ESP: Nói câu hỏi (Ví dụ: "Hôm nay thời tiết thế nào?")
+    ESP->>ESP: Mã hóa âm thanh PCM thành Opus dạng nhúng
+    ESP->>Cloud: Gửi dữ liệu âm thanh đã nén (Binary WebSocket Frames)
+    Cloud->>Cloud: Dịch giọng nói (STT) -> Xử lý ngôn ngữ (LLM) -> Tạo giọng nói (TTS)
+    Cloud->>ESP: Trả về âm thanh phản hồi (Opus audio frames)
+    ESP->>ESP: Giải mã Opus thành xung PCM gốc
+    ESP->>User: Phát câu trả lời ra loa I2S
+
+    Note over Browser, ESP: KỊCH BẢN 2: WEB DASHBOARD ĐIỀU KHIỂN
+    Browser->>ESP: Gọi HTTP GET /api/status (Đồng bộ mỗi 3 giây)
+    ESP->>Browser: Trả về dữ liệu JSON thông số hệ thống
+    Browser->>ESP: Gọi HTTP POST /api/volume {"volume": 75}
+    ESP->>ESP: Gọi hàm AudioCodec::SetOutputVolume(75)
+    ESP->>Browser: Trả lời kết quả {"status": "ok"}
+    Browser->>User: Hiện thông báo Toast "Đã lưu âm lượng!"
+                        </pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 8. QUẢN LÝ TRẠNG THÁI -->
+            <section id="trang-thai">
+                <h2 class="section-title"><i class="fa-solid fa-diagram-project"></i> 8. QUẢN LÝ TRẠNG THÁI</h2>
+                
+                <div class="card">
+                    <h3>8.1. Sơ đồ chuyển đổi trạng thái của Thiết bị (State Machine)</h3>
+                    <p>Thiết bị được thiết kế như một máy trạng thái hữu hạn để tránh xung đột tài nguyên phần cứng (không thể vừa thu âm gửi lên server vừa phát âm thanh phản hồi ra loa):</p>
+                    
+                    <div class="diagram-container">
+                        <pre class="mermaid">
+stateDiagram-v2
+    [*] --> Starting: Cấp nguồn khởi động
+    Starting --> WifiConfiguring: Chưa có cấu hình WiFi / Lỗi mạng
+    Starting --> Idle: Đã kết nối WiFi thành công
+
+    Idle --> Connecting: Wake Word "Bao Bao" được kích hoạt
+    Connecting --> Listening: Mở kênh WebSocket thành công
+    Connecting --> Idle: Kết nối thất bại
+
+    Listening --> Speaking: Nhận dữ liệu âm thanh phản hồi từ AI
+    Listening --> Idle: Không phát hiện giọng nói (Timeout 15 giây)
+
+    Speaking --> Listening: AI hoàn tất nói & Chờ người dùng trả lời tiếp
+    Speaking --> Idle: Người dùng ngắt hội thoại / Kết thúc phiên
+
+    Idle --> WebAccess: Nhận yêu cầu HTTP REST API
+    WebAccess --> Idle: Gửi phản hồi HTTP hoàn tất
+
+    note right of Idle: Màn hình hiển thị đồng hồ chờ<br/>Wake Word Engine offline đang quét mic
+    note right of Listening: Micro thu âm liên tục<br/>Mã hóa Opus gửi lên Cloud
+    note right of Speaking: Nhận và giải mã âm thanh từ Cloud<br/>Phát ra loa I2S
+                        </pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 9. BẢO MẬT HỆ THỐNG -->
+            <section id="bao-mat">
+                <h2 class="section-title"><i class="fa-solid fa-shield-halved"></i> 9. BẢO MẬT HỆ THỐNG</h2>
+                
+                <div class="card">
+                    <p>Hệ thống IoT tích hợp các giải pháp bảo mật nhiều lớp từ thiết bị đầu cuối đến truyền dẫn dữ liệu mạng:</p>
+                    <ul>
+                        <li><strong>Mã hóa đường truyền Cloud:</strong> Toàn bộ dữ liệu thoại và cấu hình truyền qua mạng Internet tới máy chủ AI của Xiaozhi được bắt buộc thực hiện qua giao thức mã hóa bảo mật WebSocket Secure (WSS) chạy trên cổng TLS 443.</li>
+                        <li><strong>Phạm vi Web Dashboard:</strong> Trang dashboard web nội bộ và các API điều khiển liên quan chỉ hoạt động và có quyền truy cập từ các thiết bị cùng nằm trong mạng WiFi cục bộ của gia đình (mạng LAN). Các kết nối từ dải IP ngoài mạng sẽ bị tường lửa router chặn.</li>
+                        <li><strong>Lưu trữ an toàn trên Flash (NVS):</strong> Các thông số cấu hình nhạy cảm như thông tin đăng nhập WiFi được lưu trữ bằng phân vùng NVS được định nghĩa riêng, tránh việc lộ thông tin khi đọc trực tiếp phân vùng chương trình.</li>
+                        <li><strong>Chống treo hệ thống (Hardware Watchdog):</strong> Tích hợp Task Watchdog Timer của ESP-IDF để tự động reset nóng hệ thống phần cứng nếu phát hiện tác vụ chạy ngầm bị khóa hoặc treo cứng quá 5 giây.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 10. HIỆU NĂNG VÀ RÀNG BUỘC -->
+            <section id="hieu-nang">
+                <h2 class="section-title"><i class="fa-solid fa-gauge-high"></i> 10. HIỆU NĂNG & RÀNG BUỘC</h2>
+                
+                <div class="card">
+                    <p>Các chỉ số hiệu năng hoạt động thực tế đo đạc được trên thiết bị Bao Bao AI Assistant:</p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 300px;">Chỉ số hiệu năng</th>
+                                <th>Giá trị đo đạc / Ràng buộc kỹ thuật</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Thời gian khởi động (Cold Boot)</strong></td>
+                                <td>Dưới 5 giây (kể từ khi cấp nguồn đến khi kết nối WiFi thành công)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Độ trễ nhận diện Wake Word</strong></td>
+                                <td>Dưới 500ms (nhận diện offline bằng mô hình MultiNet6)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Độ trễ phản hồi đàm thoại AI</strong></td>
+                                <td>Từ 1.0 đến 2.5 giây (bao gồm độ trễ mạng mạng cục bộ)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Băng thông dữ liệu thoại âm thanh</strong></td>
+                                <td>Dữ liệu Opus nén chỉ tốn khoảng 3KB/giây (tiết kiệm 90% so với PCM gốc)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Nhiệt độ chip khi chạy tải cao</strong></td>
+                                <td>Hoạt động ổn định trong khoảng 35°C đến 52°C</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Dung lượng bộ nhớ SRAM rảnh rỗi</strong></td>
+                                <td>Luôn giữ tối thiểu >80KB trống để đảm bảo Web Server không bị quá tải</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Dung lượng PSRAM rảnh rỗi</strong></td>
+                                <td>Dung lượng trống luôn đạt trên 4MB phục vụ đệm âm thanh stream nhạc</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- PHỤ LỤC -->
+            <section id="phu-luc">
+                <h2 class="section-title"><i class="fa-solid fa-folder-open"></i> PHỤ LỤC & TÀI LIỆU THAM KHẢO</h2>
+                
+                <div class="card">
+                    <h3>Phụ lục A: Danh sách linh kiện thiết bị</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">#</th>
+                                <th style="width: 250px;">Tên linh kiện phát triển</th>
+                                <th style="width: 100px;">Số lượng</th>
+                                <th>Ghi chú sử dụng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Freenove ESP32-S3 Display 2.8" LCD</td>
+                                <td>1 bộ</td>
+                                <td>Mạch phát triển trung tâm tích hợp sẵn màn LCD cảm ứng, Mic và Loa I2S</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Cáp kết nối USB Type-C sang Type-A</td>
+                                <td>1 sợi</td>
+                                <td>Dùng để cấp nguồn 5V đồng thời truyền nạp chương trình từ máy tính</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Loa nhỏ công suất 8 Ohm 1 Watt</td>
+                                <td>1 chiếc</td>
+                                <td>Được kết nối và gắn sẵn phía sau vỏ bảo vệ của board mạch</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <h3>Phụ lục B: Tài liệu tham khảo phát triển</h3>
+                    <ul>
+                        <li>Tài liệu lập trình hệ sinh thái Espressif ESP-IDF: <a href="https://docs.espressif.com/projects/esp-idf/" target="_blank">https://docs.espressif.com/projects/esp-idf/</a></li>
+                        <li>Tài liệu hướng dẫn thư viện đồ họa LVGL: <a href="https://docs.lvgl.io/" target="_blank">https://docs.lvgl.io/</a></li>
+                        <li>Trang dự án gốc Xiaozhi ESP32 trên GitHub: <a href="https://github.com/78/xiaozhi-esp32" target="_blank">https://github.com/78/xiaozhi-esp32</a></li>
+                        <li>Tài liệu tiêu chuẩn nén và giải mã âm thanh Opus Codec: <a href="https://opus-codec.org/" target="_blank">https://opus-codec.org/</a></li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Active Menu Highlighting Script -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    const id = entry.target.getAttribute('id');
+                    if (entry.intersectionRatio > 0.3) {
+                        document.querySelectorAll('.sidebar-menu li').forEach(li => {
+                            li.classList.remove('active');
+                        });
+                        const activeLink = document.querySelector(`.sidebar-menu li a[href="#${id}"]`);
+                        if (activeLink) {
+                            activeLink.parentElement.classList.add('active');
+                        }
+                    }
+                });
+            }, { threshold: [0.1, 0.3, 0.5], rootMargin: '0px 0px -50% 0px' });
+
+            // Track all sections that have an id of our navigation links
+            document.querySelectorAll('section').forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
