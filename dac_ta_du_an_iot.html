@@ -1439,27 +1439,33 @@ sequenceDiagram
                         <pre class="mermaid">
 stateDiagram-v2
     direction LR
-    [*] --> Starting: Cấp nguồn khởi động
-    Starting --> WifiConfiguring: Chưa có cấu hình WiFi / Lỗi mạng
-    Starting --> Idle: Đã kết nối WiFi thành công
+    [*] --> Starting: Khởi động
+    Starting --> WifiConfiguring: Lỗi mạng
+    Starting --> Idle: Kết nối OK
 
-    Idle --> Connecting: Wake Word "Hi Lili" được kích hoạt
-    Connecting --> Listening: Mở kênh WebSocket thành công
-    Connecting --> Idle: Kết nối thất bại
+    Idle --> Connecting: Gọi "Hi Lili"
+    Connecting --> Listening: Kết nối WSS OK
+    Connecting --> Idle: Thất bại
 
-    Listening --> Speaking: Nhận dữ liệu âm thanh phản hồi từ AI
-    Listening --> Idle: Không phát hiện giọng nói (Timeout 15 giây)
+    Listening --> Speaking: Nhận phản hồi AI
+    Listening --> Idle: Timeout 15s
 
-    Speaking --> Listening: AI hoàn tất nói & Chờ người dùng trả lời tiếp
-    Speaking --> Idle: Người dùng ngắt hội thoại / Kết thúc phiên
+    Speaking --> Listening: Chờ nói tiếp
+    Speaking --> Idle: Kết thúc
 
-    Idle --> WebAccess: Nhận yêu cầu HTTP REST API
-    WebAccess --> Idle: Gửi phản hồi HTTP hoàn tất
-
-    note right of Idle: Màn hình hiển thị đồng hồ chờ<br/>Wake Word Engine offline đang quét mic
-    note right of Listening: Micro thu âm liên tục<br/>Mã hóa Opus gửi lên Cloud
-    note right of Speaking: Nhận và giải mã âm thanh từ Cloud<br/>Phát ra loa I2S
+    Idle --> WebAccess: Nhận HTTP API
+    WebAccess --> Idle: Gửi phản hồi
                         </pre>
+                    </div>
+                    <div class="state-notes" style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                        <h4 style="color: var(--primary); font-size: 0.95rem; margin-bottom: 10px;"><i class="fa-solid fa-circle-info"></i> Chi tiết các trạng thái hệ thống:</h4>
+                        <ul style="margin-bottom: 0;">
+                            <li><strong style="color: var(--primary);">Starting & WifiConfiguring:</strong> Trạng thái thiết lập phần cứng ban đầu và cấu hình kết nối mạng WiFi (nếu chưa lưu cấu hình hoặc lỗi kết nối).</li>
+                            <li><strong style="color: var(--accent-green);">Idle (Chờ):</strong> Mạch hiển thị đồng hồ LCD, bộ nhận diện Wake Word chạy offline quét âm thanh từ microphone liên tục.</li>
+                            <li><strong style="color: var(--accent-yellow);">Listening (Lắng nghe):</strong> Microphone ghi âm giọng nói người dùng, mã hóa Opus thời gian thực và đẩy trực tiếp lên Cloud AI qua kênh WebSocket (WSS).</li>
+                            <li><strong style="color: var(--accent-yellow);">Speaking (Phát âm):</strong> Nhận dữ liệu âm thanh phản hồi từ Cloud AI, giải mã Opus sang PCM và phát ra loa I2S.</li>
+                            <li><strong style="color: var(--primary);">WebAccess (Cấu hình):</strong> ESP32 tạm dừng xử lý hội thoại để phản hồi các yêu cầu cấu hình (volume, độ sáng) từ Web Dashboard.</li>
+                        </ul>
                     </div>
                 </div>
             </section>
