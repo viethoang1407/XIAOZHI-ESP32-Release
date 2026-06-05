@@ -419,8 +419,8 @@
         .diagram-container svg {
             display: block;
             margin: 0 auto;
-            min-width: 850px !important; /* Force a minimum width to ensure text readability */
-            max-width: 100% !important; /* Allow it to scale up, but not shrink too small */
+            width: auto !important;
+            max-width: none !important;
             height: auto !important;
         }
 
@@ -915,7 +915,7 @@ graph LR
                     
                     <div class="diagram-container">
                         <pre class="mermaid">
-graph TB
+graph LR
     USER((👤 Người dùng))
 
     subgraph "Hệ thống Trợ lý AI IoT Bao Bao"
