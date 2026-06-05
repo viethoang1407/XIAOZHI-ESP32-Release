@@ -14,7 +14,9 @@
         mermaid.initialize({
             theme: 'dark',
             startOnLoad: true,
-            flowchart: { useMaxWidth: true, htmlLabels: true }
+            flowchart: { useMaxWidth: false, htmlLabels: true },
+            sequence: { useMaxWidth: false },
+            state: { useMaxWidth: false }
         });
     </script>
     <style>
@@ -410,10 +412,16 @@
             border-radius: 16px;
             padding: 30px;
             margin: 25px 0 35px;
-            display: flex;
-            justify-content: center;
-            box-shadow: var(--shadow-sm);
             overflow-x: auto;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .diagram-container svg {
+            display: block;
+            margin: 0 auto;
+            min-width: 850px !important; /* Force a minimum width to ensure text readability */
+            max-width: 100% !important; /* Allow it to scale up, but not shrink too small */
+            height: auto !important;
         }
 
         /* Code snippets */
