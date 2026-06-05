@@ -14,9 +14,9 @@
         mermaid.initialize({
             theme: 'dark',
             startOnLoad: true,
-            flowchart: { useMaxWidth: false, htmlLabels: true },
-            sequence: { useMaxWidth: false },
-            state: { useMaxWidth: false }
+            flowchart: { useMaxWidth: true, htmlLabels: true },
+            sequence: { useMaxWidth: true },
+            state: { useMaxWidth: true }
         });
     </script>
     <style>
@@ -419,8 +419,9 @@
         .diagram-container svg {
             display: block;
             margin: 0 auto;
-            width: auto !important;
-            max-width: none !important;
+            width: 100% !important;
+            min-width: 900px !important; /* Force zoom and prevent collapsing */
+            max-width: 1200px !important;
             height: auto !important;
         }
 
@@ -642,7 +643,7 @@
                     
                     <div class="diagram-container">
                         <pre class="mermaid">
-graph TB
+graph LR
     subgraph "Thiết bị IoT (ESP32-S3 Box)"
         MIC[🎤 Microphone I2S MEMS]
         SPK[🔊 Loa I2S - 8Ω 1W]
@@ -1433,6 +1434,7 @@ sequenceDiagram
                     <div class="diagram-container">
                         <pre class="mermaid">
 stateDiagram-v2
+    direction LR
     [*] --> Starting: Cấp nguồn khởi động
     Starting --> WifiConfiguring: Chưa có cấu hình WiFi / Lỗi mạng
     Starting --> Idle: Đã kết nối WiFi thành công
