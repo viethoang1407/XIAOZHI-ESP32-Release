@@ -865,7 +865,39 @@ graph LR
                 </div>
 
                 <div class="card">
-                    <h3>4.2. Quản lý phân chia CPU Core (Dual-core Allocations)</h3>
+                    <h3>4.2. Cấu trúc thư mục nguồn (Source Code Structure)</h3>
+                    <p>Sơ đồ cấu trúc các thư mục và tệp tin mã nguồn chính của dự án trợ lý ảo Bao Bao AI:</p>
+                    <pre><code>XIAOZHI-ESP32/
+├── main/
+│   ├── application.cc          # Quản lý trạng thái ứng dụng
+│   ├── web_server.cc           # HTTP Server + Dashboard UI
+│   ├── mcp_server.cc           # Model Context Protocol
+│   ├── system_info.cc          # Thông tin hệ thống (RAM, MAC...)
+│   ├── settings.cc             # Lưu trữ cấu hình NVS
+│   ├── ota.cc                  # Cập nhật firmware OTA
+│   ├── audio/
+│   │   ├── audio_codec.cc      # Codec I2S (input/output)
+│   │   ├── audio_service.cc    # Xử lý âm thanh (encode/decode)
+│   │   ├── wake_words/
+│   │   │   ├── custom_wake_word.cc  # Wake word tùy chỉnh
+│   │   │   └── afe_wake_word.cc     # Wake word mặc định
+│   │   └── processors/
+│   │       └── afe_audio_processor.cc  # DSP xử lý tín hiệu
+│   ├── display/
+│   │   ├── lcd_display.cc      # Giao diện LCD (LVGL)
+│   │   └── lvgl_display/       # Font, ảnh, theme
+│   ├── protocols/
+│   │   ├── websocket_protocol.cc  # Kết nối WebSocket
+│   │   └── mqtt_protocol.cc       # Kết nối MQTT
+│   └── boards/
+│       └── freenove-esp32s3-display-2.8-lcd/  # Board config
+├── sdkconfig                   # Cấu hình build
+├── CMakeLists.txt              # Build system
+└── managed_components/         # Thư viện bên thứ 3</code></pre>
+                </div>
+
+                <div class="card">
+                    <h3>4.3. Quản lý phân chia CPU Core (Dual-core Allocations)</h3>
                     <ul>
                         <li><strong>Core 0 (Protocol & System Tasks):</strong> Chịu trách nhiệm quản lý kết nối WiFi, chạy WebSocket client để giao tiếp AI, chạy Web Server phục vụ Dashboard, xử lý mã hóa/giải mã âm thanh Opus và chạy bộ lọc nhiễu tín hiệu microphone (AFE).</li>
                         <li><strong>Core 1 (UI & Rendering Tasks):</strong> Chịu trách nhiệm hoàn toàn cho việc vẽ giao diện người dùng LCD thông qua thư viện đồ họa LVGL v9, cập nhật hoạt ảnh biểu cảm khuôn mặt Robot, hiển thị đồng hồ và kiểm tra phản hồi sự kiện cảm ứng màn hình GT911.</li>
