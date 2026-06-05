@@ -425,6 +425,10 @@
             height: auto !important;
         }
 
+        #state-diagram svg {
+            min-width: 1200px !important; /* Phóng to sơ đồ trạng thái */
+        }
+
         /* Code snippets */
         pre {
             background-color: #0b0f19 !important;
@@ -511,7 +515,7 @@
         <nav class="sidebar">
             <div class="sidebar-brand">
                 <i class="fa-solid fa-microchip"></i>
-                <span>Bao Bao IoT Spec</span>
+                <span>Hi Lili IoT Spec</span>
             </div>
             <ul class="sidebar-menu">
                 <li class="active"><a href="#tong-quan"><i class="fa-solid fa-circle-info"></i> <span>1. Tổng quan</span></a></li>
@@ -534,7 +538,7 @@
             <header>
                 <h1>ĐẶC TẢ DỰ ÁN BÀI TẬP LỚN MÔN IoT</h1>
                 <h2>TRỢ LÝ ẢO AI THÔNG MINH TRÊN NỀN TẢNG ESP32-S3</h2>
-                <p>Tài liệu đặc tả kỹ thuật chi tiết của thiết bị Bao Bao AI Assistant, bao gồm sơ đồ khối kiến trúc phần cứng, phần mềm, API REST nội bộ, giao thức truyền thông, biểu đồ trạng thái và danh mục hơn 68 chức năng IoT.</p>
+                <p>Tài liệu đặc tả kỹ thuật chi tiết của thiết bị Hi Lili AI Assistant, bao gồm sơ đồ khối kiến trúc phần cứng, phần mềm, API REST nội bộ, giao thức truyền thông, biểu đồ trạng thái và danh mục hơn 68 chức năng IoT.</p>
                 
                 <div class="meta-grid">
                     <div class="meta-item">
@@ -555,7 +559,7 @@
                         <i class="fa-solid fa-robot"></i>
                         <div>
                             <div class="label">Tên thiết bị</div>
-                            <div class="value">Bao Bao AI Assistant</div>
+                            <div class="value">Hi Lili AI Assistant</div>
                         </div>
                     </div>
                 </div>
@@ -628,7 +632,7 @@
                     <i class="fa-solid fa-circle-exclamation"></i>
                     <div class="alert-content">
                         <strong>📌 TỔNG HỢP TOÀN BỘ CHỨC NĂNG CỦA THIẾT BỊ:</strong>
-                        <p>Thiết bị Bao Bao AI Assistant tích hợp tổng cộng <strong>80 chức năng</strong> trải dài trên 8 nhóm chính, bao phủ đầy đủ các khía cạnh của một sản phẩm IoT hoàn chỉnh từ âm thanh, hiển thị đến mạng và AI mở rộng.</p>
+                        <p>Thiết bị Hi Lili AI Assistant tích hợp tổng cộng <strong>80 chức năng</strong> trải dài trên 8 nhóm chính, bao phủ đầy đủ các khía cạnh của một sản phẩm IoT hoàn chỉnh từ âm thanh, hiển thị đến mạng và AI mở rộng.</p>
                     </div>
                 </div>
             </section>
@@ -851,7 +855,7 @@ graph LR
                             </tr>
                             <tr>
                                 <td><strong>esp-sr (MultiNet6)</strong></td>
-                                <td>Thư viện xử lý giọng nói của Espressif giúp nhận diện từ khóa đánh thức "Bao Bao" offline bằng mô hình AI mạng Nơ-ron trên chip.</td>
+                                <td>Thư viện xử lý giọng nói của Espressif giúp nhận diện từ khóa đánh thức "Hi Lili" offline bằng mô hình AI mạng Nơ-ron trên chip.</td>
                             </tr>
                             <tr>
                                 <td><strong>Opus Codec</strong></td>
@@ -867,7 +871,7 @@ graph LR
 
                 <div class="card">
                     <h3>4.2. Cấu trúc thư mục nguồn (Source Code Structure)</h3>
-                    <p>Sơ đồ cấu trúc các thư mục và tệp tin mã nguồn chính của dự án trợ lý ảo Bao Bao AI:</p>
+                    <p>Sơ đồ cấu trúc các thư mục và tệp tin mã nguồn chính của dự án trợ lý ảo Hi Lili AI:</p>
                     <pre><code>XIAOZHI-ESP32/
 ├── main/
 │   ├── application.cc          # Quản lý trạng thái ứng dụng
@@ -912,15 +916,15 @@ graph LR
                 
                 <div class="card">
                     <h3>5.1. Sơ đồ Use Case</h3>
-                    <p>Sơ đồ Use Case mô tả tất cả các tương tác khả thi của người dùng với thiết bị IoT Bao Bao AI Assistant thông qua các kênh giao tiếp: giọng nói ngoại tuyến, cảm ứng màn hình, và thông qua trình duyệt Dashboard từ xa:</p>
+                    <p>Sơ đồ Use Case mô tả tất cả các tương tác khả thi của người dùng với thiết bị IoT Hi Lili AI Assistant thông qua các kênh giao tiếp: giọng nói ngoại tuyến, cảm ứng màn hình, và thông qua trình duyệt Dashboard từ xa:</p>
                     
                     <div class="diagram-container">
                         <pre class="mermaid">
 graph LR
     USER((👤 Người dùng))
 
-    subgraph "Hệ thống Trợ lý AI IoT Bao Bao"
-        UC1[🗣️ Đánh thức bằng giọng nói 'Bao Bao']
+    subgraph "Hệ thống Trợ lý AI IoT Hi Lili"
+        UC1[🗣️ Đánh thức bằng giọng nói 'Hi Lili']
         UC2[💬 Trò chuyện trực tiếp với AI]
         UC3[🔊 Điều chỉnh âm lượng loa]
         UC4[🔆 Điều chỉnh độ sáng màn hình]
@@ -965,7 +969,7 @@ graph LR
                             <tr>
                                 <td>A-01</td>
                                 <td><strong>Đánh thức bằng giọng nói</strong></td>
-                                <td>Người dùng nói "Bao Bao" (hoặc "Jarvis") để gọi thiết bị. Đèn LED sáng xanh lá và phát tiếng kêu báo hiệu bắt đầu lắng nghe.</td>
+                                <td>Người dùng nói "Hi Lili" (hoặc "Jarvis") để gọi thiết bị. Đèn LED sáng xanh lá và phát tiếng kêu báo hiệu bắt đầu lắng nghe.</td>
                                 <td><span class="badge badge-cyan">Offline (MultiNet6)</span></td>
                             </tr>
                             <tr>
@@ -1053,7 +1057,7 @@ graph LR
                             <tr>
                                 <td>B-04</td>
                                 <td><strong>Hiển thị nhãn thiết bị</strong></td>
-                                <td>Hiển thị tên thương hiệu "Bao Bao AI" được thiết kế tinh tế trên thanh trạng thái phía trên của LCD.</td>
+                                <td>Hiển thị tên thương hiệu "Hi Lili AI" được thiết kế tinh tế trên thanh trạng thái phía trên của LCD.</td>
                             </tr>
                             <tr>
                                 <td>B-05</td>
@@ -1399,7 +1403,7 @@ sequenceDiagram
     participant Browser as 🌐 Web Dashboard
 
     Note over User, ESP: KỊCH BẢN 1: TƯƠNG TÁC GIỌNG NÓI AI
-    User->>ESP: Nói "Bao Bao" (Wake Word)
+    User->>ESP: Nói "Hi Lili" (Wake Word)
     ESP->>ESP: Chạy MultiNet6 Offline nhận diện
     ESP->>ESP: Kích hoạt LED sáng & Ding Sound FX
     ESP->>Cloud: Kết nối WebSocket (wss://) & Mở kênh audio
@@ -1431,7 +1435,7 @@ sequenceDiagram
                     <h3>8.1. Sơ đồ chuyển đổi trạng thái của Thiết bị (State Machine)</h3>
                     <p>Thiết bị được thiết kế như một máy trạng thái hữu hạn để tránh xung đột tài nguyên phần cứng (không thể vừa thu âm gửi lên server vừa phát âm thanh phản hồi ra loa):</p>
                     
-                    <div class="diagram-container">
+                    <div class="diagram-container" id="state-diagram">
                         <pre class="mermaid">
 stateDiagram-v2
     direction LR
@@ -1439,7 +1443,7 @@ stateDiagram-v2
     Starting --> WifiConfiguring: Chưa có cấu hình WiFi / Lỗi mạng
     Starting --> Idle: Đã kết nối WiFi thành công
 
-    Idle --> Connecting: Wake Word "Bao Bao" được kích hoạt
+    Idle --> Connecting: Wake Word "Hi Lili" được kích hoạt
     Connecting --> Listening: Mở kênh WebSocket thành công
     Connecting --> Idle: Kết nối thất bại
 
@@ -1480,7 +1484,7 @@ stateDiagram-v2
                 <h2 class="section-title"><i class="fa-solid fa-gauge-high"></i> 10. HIỆU NĂNG & RÀNG BUỘC</h2>
                 
                 <div class="card">
-                    <p>Các chỉ số hiệu năng hoạt động thực tế đo đạc được trên thiết bị Bao Bao AI Assistant:</p>
+                    <p>Các chỉ số hiệu năng hoạt động thực tế đo đạc được trên thiết bị Hi Lili AI Assistant:</p>
                     
                     <table>
                         <thead>
